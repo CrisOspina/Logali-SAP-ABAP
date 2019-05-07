@@ -1,5 +1,5 @@
 PRACTICA INICIACIÓN A LA PROGRAMACIÓN ABAP - LOGALI
-Gui de Alpina:
+Gui:
 Programa: YPRUEBA_CO
 Includes: YPRUEBA_CO_TOP.
           YPRUEBA_CO_F01.
