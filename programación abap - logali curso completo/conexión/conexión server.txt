@@ -1,0 +1,20 @@
+﻿**Curso logali SAP completo
+**SAP 4 PRACTICE
+	Access: SAP ERP 6.0 EPH7 ABAP - 30 days
+	Expiration date: 2019-01-16
+
+** propiedades del sistema:
+	Description:        Server 11
+	Application Server: erp11.sap4practice.com
+	Instance Number:    11
+	System ID:          ERP
+
+
+** Acceso:
+mandante:    810
+usuario:   	 P1002880
+contraseña: ***
+
+** paquete:
+paquete: ZP1002880
+request: ERPK905844

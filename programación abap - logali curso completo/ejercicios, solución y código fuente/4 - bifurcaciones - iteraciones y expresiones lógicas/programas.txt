@@ -1,0 +1,65 @@
+Programa tema 4
+REPORT z_if_p1002880.
+
+* Declaraciones
+DATA: numero TYPE i VALUE 7.
+
+* Bifurcación
+IF numero = 7.
+* Visualización en pantalla.
+  WRITE: / 'Número: ', numero.
+ELSE.
+* Visualización en pantalla.
+  WRITE: / 'Número distinto a 7: ', numero.
+ENDIF.
+
+*-----------------------------------------------------------------------------------*
+
+* Sentencia CASE
+DATA: empresa TYPE string VALUE 'SAP'.
+
+* Case
+CASE empresa.
+  WHEN 'LOGALI'.
+    WRITE: / 'Academia'.
+  WHEN 'SAP'.
+    WRITE: / 'Software empresarial'.
+  WHEN OTHERS.
+    WRITE: / 'Desconocido'.
+ENDCASE.
+
+*-----------------------------------------------------------------------------------*
+
+* Sentencia DO
+DATA: cont  TYPE i VALUE 1,
+      cont2 TYPE i VALUE 1.
+
+* DO y condicional
+DO.
+  WRITE: / 'Contador: ', cont.
+  ADD 1 TO cont.
+  IF cont > 10.
+    EXIT.
+  ENDIF.
+ENDDO.
+
+* DO
+DO 10 TIMES.
+  WRITE: / 'Contador 2: ', cont2.
+  cont2 = cont2 + 1.
+ENDDO.
+
+*-----------------------------------------------------------------------------------*
+
+* Sentencia WHILE
+DATA: cont TYPE i VALUE 1.
+
+* WHILE.
+WHILE cont <= 20.
+  IF cont <= 10.
+    WRITE: / 'Contador: ', cont.
+  ENDIF.
+  ADD 1 TO cont.
+ENDWHILE.
+
+*-----------------------------------------------------------------------------------*

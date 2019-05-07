@@ -1,0 +1,148 @@
+* Programas creados tema 2
+REPORT Z_SUMA_ADD_P1002880.
+
+* Declaración de variables.
+DATA: tarifa_base       TYPE i VALUE 20,
+      tarifa_area_corp  TYPE i VALUE 10,
+      tarifa_ser_medico TYPE i VALUE 15,
+      tarifa_total      TYPE i.
+
+* Operación aritmética
+tarifa_total = tarifa_base + tarifa_area_corp + tarifa_ser_medico.
+
+* Visualización primer resultado.
+WRITE: 'Primera tarifa: ', tarifa_total.
+ULINE.
+
+* Agrego a resultado final
+ADD 5 TO tarifa_total.
+
+* Visualización en pantalla.
+WRITE: 'Tarifa total: ', tarifa_total.
+
+*----------------------------------------------------------------------------*
+
+REPORT Z_RESTA_SUBTR_P1002880.
+
+* Declaración.
+DATA: tarifa_mantenimiento TYPE i VALUE 30,
+      tarifa_margen        TYPE i VALUE 10,
+      tarifa_base          TYPE i.
+
+* Operación aritmética.
+tarifa_base = tarifa_mantenimiento - tarifa_margen.
+
+* Visualización primer resultado.
+WRITE: 'Primer resultado: ', tarifa_base.
+ULINE.
+
+* Se le resta al resultado
+SUBTRACT 4 from tarifa_base.
+
+* Visualización de resultado final.
+WRITE: 'Resultado final: ', tarifa_base.
+
+*----------------------------------------------------------------------------*
+
+REPORT Z_MULTIPLI_P1002880.
+
+* Declaración.
+DATA: tarifa_soc_fi TYPE i VALUE 2,
+      tarifa_soc_co TYPE i VALUE 3,
+      tarifa_multi  TYPE i.
+
+* Operación aritmética.
+tarifa_multi = tarifa_soc_fi * tarifa_soc_co.
+
+* Visualización primer resultado.
+WRITE: 'Primer resultado: ', tarifa_multi.
+ULINE.
+
+* Se vuelve a multiplicar el resultado.
+MULTIPLY tarifa_multi by 2.
+
+* Visualización de resultado final.
+WRITE: 'Resultado final: ', tarifa_multi.
+
+*----------------------------------------------------------------------------*
+
+REPORT Z_DIVIDE_P1002880.
+
+* Declaración.
+DATA: tarifa_ejercicio TYPE i VALUE 38,
+      tarifa_periodo   TYPE i VALUE 4,
+      tarifa_aplicada  TYPE p LENGTH 8 DECIMALS 2.
+
+* Operación aritmética
+tarifa_aplicada = tarifa_ejercicio / tarifa_periodo.
+
+* Visualización de primer resultado.
+WRITE: 'Primer resultado: ', tarifa_aplicada.
+ULINE.
+
+* Se vuelve a dividir el resultado.
+DIVIDE tarifa_aplicada BY 3.
+
+* Visualización resultado final.
+WRITE: 'Resultado final: ', tarifa_aplicada.
+
+*----------------------------------------------------------------------------*
+
+REPORT Z_DIV_P1002880.
+* Declaración.
+DATA: num_a  TYPE i VALUE 17,
+      num_b  TYPE i VALUE 4,
+      result TYPE p LENGTH 4 DECIMALS 2.
+
+* Operación aritmética
+result = num_a div num_b.
+
+* Visualización en pantalla.
+WRITE: / 'Resultado final: ', result.
+
+*----------------------------------------------------------------------------*
+
+REPORT Z_REST_MOD_P1002880.
+* Declaración.
+DATA: num_a  TYPE i VALUE 17,
+      num_b  TYPE i VALUE 4,
+      result TYPE p LENGTH 4 DECIMALS 2.
+
+* Operación aritmética
+result = num_a mod num_b.
+
+* Visualización en pantalla.
+WRITE: / 'Resultado final: ', result.
+
+*----------------------------------------------------------------------------*
+
+REPORT Z_EXPO_RAIZ_P1002880.
+* Declaración y asignación.
+DATA: numero TYPE i VALUE 5.
+
+* Exponenciación
+numero = numero ** 2.
+
+* Visualización.
+WRITE: 'Resultado al cuadrado: ', numero.
+
+*----------------------------------------------------------------------------*
+
+REPORT Z_EXPO_RAIZ_P1002880.
+* Declaración y asignación.
+DATA: numero TYPE i VALUE 5.
+
+* Exponenciación
+numero = numero ** 2.
+
+* Visualización.
+WRITE: 'Resultado al cuadrado: ', numero.
+ULINE.
+
+* Solución raíz cuadrada.
+numero = sqrt( numero ). " número eq 25
+
+WRITE: / 'Raíz cuadrada: ', numero.
+
+*----------------------------------------------------------------------------*
+

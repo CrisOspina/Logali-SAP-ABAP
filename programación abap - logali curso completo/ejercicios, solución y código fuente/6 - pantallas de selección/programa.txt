@@ -1,0 +1,111 @@
+Clase de mensajes: Z_P1002880.
+
+*-----------------------------------------------------------------*
+
+* Eventos:
+INITIALIZATION.                  = COMIENZA PROGRAMA
+AT SELECTION-SCREEN ON pa_name1. = VALIDA CAMPOS ANTES DE
+START-OF-SELECTION.              = EJECUTA LÓGICA
+SELECTION-SCREEN BEGIN OF LINE.
+	" PARA COLOCAR EN UNA LINEA UN GRUPO, POR EJEMPLO UN GRUPO DE RADIOBUTTONS.
+	" BLOQUE DE CÓDIGO EN UNA SOLA LÍNEA.
+SELECTION-SCREEN END   OF LINE.
+*--------------------------------------------------------------------*
+* Evento AT SELECTION-SCREEN ON
+*--------------------------------------------------------------------*
+report Z_DEC_BANCO_P1002880.
+
+AT SELECTION-SCREEN ON p_perio.      " Se valida parametro.
+  IF p_perio > 12.   " El rango debe estar entre 1-12
+    MESSAGE e000(Z_P1002880).
+  ENDIF.
+  
+*--------------------------------------------------------------------*
+
+Programa con pantallas de selección
+*&---------------------------------------------------------------------*
+*& Report  Z_DEC_BANCO_P1002880
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT z_dec_banco_p1002880.
+* Tablas a usar.
+TABLES: bsik.
+
+SELECTION-SCREEN BEGIN OF BLOCK block1 WITH FRAME TITLE text-001.
+*Siguiente.
+SELECTION-SCREEN SKIP.
+
+* Parametros generales.
+SELECTION-SCREEN BEGIN OF BLOCK block2 WITH FRAME TITLE text-b01.
+* Declaración de parametros.
+  PARAMETERS: p_soc   TYPE bsik-bukrs OBLIGATORY,  " Sociedad.
+              p_ejer  TYPE n LENGTH 4 OBLIGATORY,  " Ejericio.
+              p_perio TYPE n LENGTH 2 OBLIGATORY.  " Período contable.
+SELECTION-SCREEN END OF BLOCK block2.
+
+*--------------------------------------------------------------------*
+
+* Siguiente.
+SELECTION-SCREEN SKIP.
+
+SELECTION-SCREEN BEGIN OF BLOCK block3 WITH FRAME TITLE text-003.
+
+* Radio buttons.
+* Grupo de radio buttons para acreedores y deudores.
+PARAMETERS: p_acre RADIOBUTTON GROUP bupa, " Acreedores.
+            p_deud RADIOBUTTON GROUP bupa. " Deudores.
+*--------------------------------------------------------------------*
+
+* Siguiente.
+SELECTION-SCREEN SKIP.
+
+  SELECTION-SCREEN BEGIN OF LINE.
+
+* Casillas de verificación.
+* Grupo de casillas de verificación para test y manager.
+    PARAMETERS: p_test  AS CHECKBOX.             " Test.
+    SELECTION-SCREEN COMMENT (20) c_test.
+
+    PARAMETERS: p_notif AS CHECKBOX DEFAULT 'X'. " Manager.
+    SELECTION-SCREEN COMMENT (20) c_notif.
+
+  SELECTION-SCREEN END OF LINE.
+
+SELECTION-SCREEN END OF BLOCK block3.
+*--------------------------------------------------------------------*
+
+*Siguiente.
+SELECTION-SCREEN SKIP.
+
+* Implementar nuevas funcionalidades.
+* Declaración de select-options.
+SELECTION-SCREEN BEGIN OF BLOCK block4 WITH FRAME TITLE text-005.
+  SELECT-OPTIONS: s_ncuent FOR bsik-lifnr, " Número de cuenta del proveedor o acreedor.
+                  s_copera FOR bsik-umsks, " Clase de operación.
+                  s_fcompe FOR bsik-augdt, " Fecha de compensación.
+                  s_ndocum FOR bsik-belnr. " Número de documento contable.
+SELECTION-SCREEN END OF BLOCK block4.
+SELECTION-SCREEN SKIP.
+SELECTION-SCREEN END OF BLOCK block1.
+
+*--------------------------------------------------------------------*
+* Evento INITIALIZATION.
+*--------------------------------------------------------------------*
+INITIALIZATION.
+* Simbolos de texto.
+  c_test  = text-c01.
+  c_notif = text-c02.
+
+*--------------------------------------------------------------------*
+* Evento AT SELECTION-SCREEN ON
+*--------------------------------------------------------------------*
+AT SELECTION-SCREEN ON p_perio.      " Se valida parametro.
+  IF p_perio > 12.   " El rango debe estar entre 1-12
+    MESSAGE e000(Z_P1002880).
+  ENDIF.
+
+*--------------------------------------------------------------------*

@@ -1,0 +1,119 @@
+* Programas tema 1
+***** Z_VAR_FH_P1002880
+
+REPORT Z_VAR_FH_P1002880.
+
+* Solución ejercicio 1.
+* Declaración de variables.
+DATA: fecha TYPE d VALUE '20251127',
+      hora  TYPE t VALUE '124500'.
+
+* Visualización en pantalla.
+WRITE: / 'Fecha: ', fecha DD/MM/YYYY,
+       / 'Hora: ',  hora ENVIRONMENT TIME FORMAT.
+	   
+*-----------------------------------------------------------*
+
+* Solución ejercicio 2.
+* Declaración de variables. tipo completos
+DATA: iva     TYPE i,
+      reparto TYPE f.
+
+iva     = 7.
+reparto = '18.95'.
+
+* Visualización en pantalla.
+WRITE: / 'Iva: ',   iva,
+       / 'Reparto', reparto.
+*-----------------------------------------------------------*	   
+
+***** Z_DECFLOAT16_34_P1002880
+REPORT Z_DECFLOAT16_34_P1002880.
+* Solución ejercicio 3.
+* Declaración de variables.
+DATA: impuesto_directo   TYPE DECFLOAT16,
+      impuesto_indirecto TYPE DECFLOAT34.
+
+* Asignación de valores.
+impuesto_directo = '19.5'.
+impuesto_indirecto = '19.999903'.
+
+* Visualización en pantalla.
+WRITE: / 'Impuesto directo: ',   impuesto_directo,
+       / 'Impuesto indirecto: ', impuesto_indirecto.
+	   
+*-----------------------------------------------------------*	   
+
+***** Z_STRING_P1002880
+REPORT Z_STRING_P1002880.
+* Solución ejercicio 4.
+* Declaración de variables.
+DATA: nombre      TYPE string,
+      hexadecimal TYPE xstring.
+
+* Asigno valores.
+nombre      = 'Cristian'.
+hexadecimal = 'A1'.
+
+* Visualización en pantalla.
+WRITE: / 'Nombre: ',      nombre,
+       / 'Hexadecimal: ', hexadecimal.
+	   
+*-----------------------------------------------------------*	   
+
+***** Z_VAR_INCOMP_P1002880.
+REPORT Z_VAR_INCOMP_P1002880.
+* Solución ejercicio 5.
+* Declaración de variables y asignaciones.
+DATA: sociedad TYPE c LENGTH 6 VALUE 'Logali',
+      tarifa   TYPE p LENGTH 8 DECIMALS 2 VALUE '1489.36'.
+
+* Visualización en pantalla.
+WRITE: / 'Sociedad: ', sociedad,
+       / 'tarifa: ',   tarifa.
+	   
+*****
+* Solución ejercicio 6.
+* Declaración y asignación.
+DATA: codigo_sociedad TYPE n LENGTH 4 VALUE '11',
+      datos           TYPE x LENGTH 5 VALUE '13'.
+
+* Visualización.
+WRITE: / 'Código sociedad: ', codigo_sociedad,
+       / 'Datos: ', datos.
+	   
+*-----------------------------------------------------------*		   
+
+**** Z_CONST_P1002880.
+REPORT Z_CONST_P1002880.
+* Solución ejercicio 7.
+* Declaración y asignación de constantes.
+CONSTANTS: lv_fecha   TYPE d          VALUE '20181115',
+           lv_hora    TYPE t          VALUE '080000',
+           lv_int     TYPE i          VALUE 13,
+           lv_float   TYPE f          VALUE '13.05',
+           lv_dec16   TYPE decfloat16 VALUE '13.144',
+           lv_dec34   TYPE decfloat34 VALUE '13.133333',
+           lv_string  TYPE string     VALUE 'Susy',
+           lv_xstring TYPE xstring    VALUE 'C5',
+           lv_char    TYPE c LENGTH 4 VALUE 'Susy',
+           lv_p       TYPE p LENGTH 2 VALUE '132.23',
+           lv_n       TYPE n LENGTH 5 VALUE '56',
+           lv_x       TYPE x LENGTH 5 VALUE 'A445'.
+
+* Visualización.
+WRITE:  'Tipo d: ',       lv_fecha DD/MM/YYYY,
+      / 'Tipo t: ',       lv_hora ENVIRONMENT TIME FORMAT,
+      / 'Tipo i: ',       lv_int,
+      / 'Tipo f: ',       lv_float,
+      / 'Tipo dec16: ',   lv_dec16,
+      / 'Tipo dec34: ',   lv_dec34,
+      / 'Tipo string: ',  lv_string,
+      / 'Tipo xstring: ', lv_xstring,
+      / 'Tipo char: ',    lv_char,
+      / 'Tipo p: ',       lv_p,
+      / 'Tipo n: ',       lv_n,
+      / 'Tipo x: ',       lv_x.
+	   
+	   
+	   

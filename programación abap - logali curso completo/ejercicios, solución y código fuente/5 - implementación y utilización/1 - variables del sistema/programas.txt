@@ -1,0 +1,50 @@
+Programas - Z_IF_P1002880
+* Variables del sistema.
+* Índice de tablas internas.
+WRITE: / 'Indice de tablas internas: ', sy-tabix.
+
+* Número de dynpro actual.
+WRITE: / 'Número de dynpro actual: ', sy-dynnr.
+
+* Código de retorno de sentencias ABAP.
+IF sy-uname = 'P1002880'.
+  WRITE: / 'Usuario: ', sy-uname.
+ELSE.
+  WRITE: / 'Usuario no valido'.
+ENDIF.
+
+IF sy-subrc = 0.
+  WRITE: / 'Retorno valido'.
+ENDIF.
+
+* Día de la semana en calendario fábrica.
+WRITE: / 'Día de la semana en calendario fábrica: ', sy-fdayw.
+
+*--------------------------------------------------------------------*
+
+REPORT Z_MSJ_P1002880.
+* Programa de mensajes.
+* Declaración de parámetros.
+PARAMETERS: pa_msj TYPE c LENGTH 1.
+
+* Evento 1
+AT SELECTION-SCREEN ON pa_msj.
+  IF pa_msj is INITIAL.
+    MESSAGE e012(sabapdocu).
+  ENDIF.
+
+* Evento 2
+START-OF-SELECTION.
+* Verificación de mensajes.
+  CASE pa_msj.
+    WHEN 'I' OR 'i'.
+      MESSAGE i014(sabapdocu).
+    WHEN 'S' OR 's'.
+      MESSAGE s015(sabapdocu).
+    WHEN 'A' OR 'a'.
+      MESSAGE i016(sabapdocu).
+    WHEN OTHERS.
+      WRITE: / 'Desconocido'.
+  ENDCASE.
+
+*--------------------------------------------------------------------*

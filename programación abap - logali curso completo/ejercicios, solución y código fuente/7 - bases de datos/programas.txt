@@ -1,0 +1,238 @@
+Base de datos - tabla transaparente - ZIB_P1002880
+*------------------------------------------------------------------------------------------*
+*------------------------------------------------------------------------------------------*
+
+
+*&---------------------------------------------------------------------*
+*& Report  Z_DEC_BANCO_P1002880
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT z_dec_banco_p1002880.
+* Tablas a usar.
+TABLES: bsik.
+
+DATA: gwa_banco TYPE zib_p1002880. " Estructura de la tabla transparente creada
+
+SELECTION-SCREEN BEGIN OF BLOCK block1 WITH FRAME TITLE text-001.
+*Siguiente.
+SELECTION-SCREEN SKIP.
+
+* Parametros generales.
+SELECTION-SCREEN BEGIN OF BLOCK block2 WITH FRAME TITLE text-b01.
+* Declaración de parametros.
+PARAMETERS: p_soc   TYPE bsik-bukrs OBLIGATORY,  " Sociedad.
+            p_ejer  TYPE n LENGTH 4,  " Ejericio.
+            p_perio TYPE n LENGTH 2.  " Período contable.
+SELECTION-SCREEN END OF BLOCK block2.
+
+*--------------------------------------------------------------------*
+
+SELECTION-SCREEN SKIP.
+
+SELECTION-SCREEN BEGIN OF BLOCK block5 WITH FRAME TITLE text-006.
+PARAMETERS: p_create RADIOBUTTON GROUP bbdd, " Crear
+            p_read   RADIOBUTTON GROUP bbdd, " Leer
+            p_update RADIOBUTTON GROUP bbdd, " Actualizar
+            p_delete RADIOBUTTON GROUP bbdd, " Eliminar
+            p_modify RADIOBUTTON GROUP bbdd. " Modificar
+SELECTION-SCREEN END OF BLOCK block5.
+
+*--------------------------------------------------------------------*
+
+* Siguiente.
+SELECTION-SCREEN SKIP.
+
+SELECTION-SCREEN BEGIN OF BLOCK block3 WITH FRAME TITLE text-003.
+
+* Radio buttons.
+* Grupo de radio buttons para acreedores y deudores.
+PARAMETERS: p_acre RADIOBUTTON GROUP bupa, " Acreedores.
+            p_deud RADIOBUTTON GROUP bupa. " Deudores.
+*--------------------------------------------------------------------*
+
+* Siguiente.
+SELECTION-SCREEN SKIP.
+
+SELECTION-SCREEN BEGIN OF LINE.
+
+* Casillas de verificación.
+* Grupo de casillas de verificación para test y manager.
+PARAMETERS: p_test  AS CHECKBOX.             " Test.
+SELECTION-SCREEN COMMENT (20) c_test.
+
+PARAMETERS: p_notif AS CHECKBOX DEFAULT 'X'. " Manager.
+SELECTION-SCREEN COMMENT (20) c_notif.
+
+SELECTION-SCREEN END OF LINE.
+
+SELECTION-SCREEN END OF BLOCK block3.
+*--------------------------------------------------------------------*
+
+*Siguiente.
+SELECTION-SCREEN SKIP.
+
+* Implementar nuevas funcionalidades.
+* Declaración de select-options.
+SELECTION-SCREEN BEGIN OF BLOCK block4 WITH FRAME TITLE text-005.
+SELECT-OPTIONS: s_ncuent FOR bsik-lifnr, " Número de cuenta del proveedor o acreedor.
+                s_copera FOR bsik-umsks, " Clase de operación.
+                s_fcompe FOR bsik-augdt, " Fecha de compensación.
+                s_ndocum FOR bsik-belnr. " Número de documento contable.
+SELECTION-SCREEN END OF BLOCK block4.
+
+SELECTION-SCREEN SKIP.
+
+*--------------------------------------------------------------------*
+
+SELECTION-SCREEN END OF BLOCK block1.
+
+*--------------------------------------------------------------------*
+* Evento INITIALIZATION.
+*--------------------------------------------------------------------*
+INITIALIZATION.
+* Simbolos de texto.
+  c_test  = text-c01.
+  c_notif = text-c02.
+
+*--------------------------------------------------------------------*
+* Evento AT SELECTION-SCREEN ON
+*--------------------------------------------------------------------*
+AT SELECTION-SCREEN ON p_perio.      " Se valida parametro.
+  IF p_perio > 12.   " El rango debe estar entre 1-12
+    MESSAGE e000(z_p1002880).
+  ENDIF.
+
+*--------------------------------------------------------------------*
+
+*--------------------------------------------------------------------*
+* START-SELECTION.
+*--------------------------------------------------------------------*
+START-OF-SELECTION.
+
+* Selección de crud
+  CASE abap_true.  " X
+    WHEN p_create. " ---------------------------------------------- Crear
+* Crear
+      gwa_banco-sociedad    = p_soc.    " Sociedad.
+      gwa_banco-ejercicio   = p_ejer.   " Ejercicio.
+      gwa_banco-per_cont    = p_perio.  " Perido contable.
+
+      IF p_acre IS NOT INITIAL.
+        gwa_banco-tipo_ejec = 'A'.      " Acreedores
+      ELSEIF p_deud IS NOT INITIAL.
+        gwa_banco-tipo_ejec = 'B'.      " Deudores
+      ENDIF.
+
+      gwa_banco-usuario_res = sy-uname. " Usuario.
+      gwa_banco-fecha_eje   = sy-datum. " Fecha.
+
+* Insertar registro.
+      INSERT zib_p1002880 FROM gwa_banco.
+
+* Se verifica inserción.
+      IF sy-subrc = 0.
+        MESSAGE s001(z_p1002880). " Registro exitoso.
+      ELSE.
+        MESSAGE e002(z_p1002880). " No registrado.
+      ENDIF.
+
+    WHEN p_read. " ---------------------------------------------- " Leer
+* Consulta a bd.
+      SELECT SINGLE *
+        FROM zib_p1002880
+          INTO gwa_banco
+            WHERE sociedad  = p_soc
+              AND ejercicio = p_ejer
+              AND per_cont  = p_perio.
+
+* Verifico consulta.
+      IF sy-subrc = 0.
+        WRITE:   'Sociedad: ',        p_soc,
+               / 'Ejercicio: ',       p_ejer,
+               / 'Periodo contable:', p_perio.
+      ELSE.
+        MESSAGE e003(z_p1002880).
+      ENDIF.
+
+    WHEN p_update. " ---------------------------------------------- " Actualizar
+
+      IF p_acre IS NOT INITIAL.
+* Actualización de campo.
+        UPDATE zib_p1002880
+          SET tipo_ejec = 'A' " Acreedores
+            WHERE sociedad  = p_soc
+              AND ejercicio = p_ejer
+              AND per_cont  = p_perio.
+
+      ELSEIF p_deud IS NOT INITIAL.
+* Actualización de campo.
+        UPDATE zib_p1002880
+          SET tipo_ejec = 'D' " Deudores
+            WHERE sociedad = p_soc
+              AND ejercicio = p_ejer
+              AND per_cont  = p_perio.
+      ENDIF.
+
+* Verifico actualización.
+      IF sy-subrc = 0.
+        MESSAGE s004(z_p1002880).
+      ELSE.
+        MESSAGE e005(z_p1002880).
+      ENDIF.
+
+    WHEN p_delete. " ---------------------------------------------- " Eliminar
+* Consulta a bd.
+      SELECT SINGLE *
+        FROM zib_p1002880
+          INTO gwa_banco
+            WHERE sociedad  = p_soc
+              AND ejercicio = p_ejer
+              AND per_cont  = p_perio.
+
+* Valido existencia de registro.
+      IF gwa_banco IS INITIAL.
+        MESSAGE e008(z_p1002880).
+      ENDIF.
+
+* Sentencia para borrar.
+      DELETE zib_p1002880 FROM gwa_banco.
+
+* Verifico registro.
+      IF sy-subrc = 0.
+        MESSAGE s006(z_p1002880).
+      ELSE.
+        MESSAGE e007(z_p1002880).
+      ENDIF.
+
+    WHEN p_modify. " ---------------------------------------------- " Modificar
+* Modificar.
+      gwa_banco-sociedad    = p_soc.    " Sociedad.
+      gwa_banco-ejercicio   = p_ejer.   " Ejercicio.
+      gwa_banco-per_cont    = p_perio.  " Perido contable.
+
+      IF p_acre IS NOT INITIAL.
+        gwa_banco-tipo_ejec = 'A'.      " Acreedores
+      ELSEIF p_deud IS NOT INITIAL.
+        gwa_banco-tipo_ejec = 'D'.      " Deudores
+      ENDIF.
+
+      gwa_banco-usuario_res = sy-uname. " Usuario.
+      gwa_banco-fecha_eje   = sy-datum. " Fecha.
+
+* Modificar.
+      MODIFY zib_p1002880 FROM gwa_banco.
+
+* Valido modificación.
+      IF sy-subrc = 0.
+        MESSAGE s009(z_p1002880).
+      ELSE.
+        MESSAGE e010(z_p1002880).
+      ENDIF.
+
+    WHEN OTHERS.
+
+  ENDCASE.

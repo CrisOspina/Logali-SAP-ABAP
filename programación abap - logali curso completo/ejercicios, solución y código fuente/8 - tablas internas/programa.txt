@@ -1,0 +1,317 @@
+Tablas internas
+programa:           Z_TI_AP_P1002880
+tabla transparente: ZEMP_P1002880
+
+*-------------------------------------------------------------------------------------------------*
+* tabla standard - append
+* Declaración.
+DATA: gti_datos TYPE STANDARD TABLE OF zemp_p1002880, " Tabla interna.
+      gwa_datos TYPE zemp_p1002880.                   " Work area.
+
+* Datos a ingresar.
+gwa_datos-id     = '1239876M'.
+gwa_datos-email  = 'FERNANDO@LOGALISAP.COM'.
+gwa_datos-ape1   = 'DOMINGUEZ'.
+gwa_datos-ape2   = 'OTERO'.
+gwa_datos-nombre = 'FERNANDO'.
+gwa_datos-fechan = '19850924'.
+gwa_datos-fechaa = '20180101'.
+
+* Inserción.
+APPEND gwa_datos TO gti_datos.
+*-------------------------------------------------------------------------------------------------*
+* tabla standard - append
+* La tabla con cabecera actua como work area y tabla interna a la vez.
+* Agregar registros con cabecera
+DATA: gti_datos_cab TYPE STANDARD TABLE OF zemp_p1002880 WITH HEADER LINE.
+
+* Registro.
+gti_datos_cab-id     = '1239876C'.
+gti_datos_cab-email  = 'CRIS@LOGALISAP.COM'.
+gti_datos_cab-ape1   = 'OSPINA'.
+gti_datos_cab-ape2   = 'ARROYO'.
+gti_datos_cab-nombre = 'CRISTIAN'.
+gti_datos_cab-fechan = '19970924'.
+gti_datos_cab-fechaa = '20180101'.
+
+* Inserción.
+APPEND gti_datos_cab.
+
+*-------------------------------------------------------------------------------------------------*
+* tabla sorted and hashed - insert
+* tabla kna1 - maestro de clientes
+* campo kunnr - número de deudor
+* Tablas sorted y hashed.
+DATA: gty_tts_clientes  TYPE SORTED TABLE OF kna1 WITH UNIQUE KEY kunnr,  " sorted
+      gty_tth_clientes  TYPE HASHED TABLE OF kna1 WITH UNIQUE KEY kunnr,  " hashed.
+      gty_clientes      TYPE kna1.                                        " work area para sorted y hashed.
+
+* Registro para las dos tablas.
+gty_clientes-kunnr = '123456789'.
+
+* Inserción.
+INSERT gty_clientes into TABLE gty_tts_clientes. " sorted
+INSERT gty_clientes INTO TABLE gty_tth_clientes. " hashed
+
+*--------------------------------------------------------------------*
+
+* Sentecia describe: cuenta cuantos deudores tiene usa
+* Sentencia describe
+DATA: gty_tti_clientes TYPE STANDARD TABLE OF kna1,
+      gv_clientes      TYPE i.
+
+* Consulta
+SELECT *
+  FROM kna1
+    INTO TABLE gty_tti_clientes
+      WHERE land1 = 'US'.
+
+IF sy-subrc = 0.
+* Aplicación de sentencia para contar.
+  DESCRIBE TABLE gty_tti_clientes LINES gv_clientes.
+ELSE.
+  MESSAGE e008(z_p1002880).
+ENDIF.
+
+* Imprimir.
+WRITE: / 'Total de deudores en USA: ', gv_clientes.
+
+*--------------------------------------------------------------------*
+
+* Sentecia READ
+* Sentencia READ
+DATA: gty_tti_clientes TYPE STANDARD TABLE OF kna1,
+      gty_clientes     TYPE kna1.
+
+* Read table.
+SELECT *
+  FROM kna1
+    INTO TABLE gty_tti_clientes
+      WHERE land1 = 'US'.
+
+IF sy-subrc = 0.
+  READ TABLE gty_tti_clientes INTO gty_clientes
+    WITH KEY regio = 'IL'.
+  IF sy-subrc = 0.
+    WRITE: / 'Número de deudor: ', gty_clientes-kunnr.
+  ELSE.
+    MESSAGE e008(z_p1002880).
+  ENDIF.
+ENDIF.
+
+*--------------------------------------------------------------------*
+
+* Sentecia LOOP
+DATA: gty_tti_clientes TYPE STANDARD TABLE OF kna1,
+      gty_clientes     TYPE kna1.
+
+* Realizar consulta.
+SELECT *
+  FROM kna1
+    INTO TABLE gty_tti_clientes
+      WHERE kunnr <> space.
+
+* Loop e imprimir.
+LOOP AT gty_tti_clientes INTO gty_clientes WHERE erdat > '19920624'.
+  WRITE: / 'Deudores con fecha de creación mayor al 24-06-1992: ', gty_clientes-kunnr.
+ENDLOOP.
+
+*--------------------------------------------------------------------*
+
+* Ordenación tabla interna
+DATA: gty_tti_clientes TYPE STANDARD TABLE OF kna1,
+      gty_clientes     TYPE kna1.
+
+* Realizar consulta.
+SELECT *
+  FROM kna1
+    INTO TABLE gty_tti_clientes
+      WHERE kunnr <> space.
+
+* Ordenar descendente.
+SORT gty_tti_clientes DESCENDING BY erdat.
+
+* Loop e imprimir.
+LOOP AT gty_tti_clientes INTO gty_clientes WHERE erdat > '19920624'.
+  WRITE: / 'Deudores con fecha de creación mayor al 24-06-1992: ', gty_clientes-kunnr.
+ENDLOOP.
+
+*--------------------------------------------------------------------*
+
+* Sentencia Modify
+DATA: gty_tti_clientes TYPE STANDARD TABLE OF kna1,
+      gty_clientes     TYPE kna1.
+
+* Realizar consulta.
+SELECT *
+  FROM kna1
+    INTO TABLE gty_tti_clientes
+      WHERE kunnr <> space.
+
+* Ordenar descendente.
+SORT gty_tti_clientes DESCENDING BY erdat.
+
+* Loop e imprimir modificación.
+LOOP AT gty_tti_clientes INTO gty_clientes WHERE erdat > '19920624'.
+* Si es igual a esta fecha, modificar
+  IF gty_clientes-erdat = '19960726'.
+* Por cada iteración se modifica la fecha con la actual.
+    gty_clientes-erdat = sy-datum.
+* Modificar    
+    MODIFY gty_tti_clientes FROM gty_clientes TRANSPORTING erdat.
+  ENDIF.
+* Imprimir
+     WRITE: / gty_clientes-erdat.
+ENDLOOP.
+
+*--------------------------------------------------------------------*
+
+* Delete registros con la fecha de creación 1996-07-26.
+DATA: gty_tti_clientes_cab TYPE STANDARD TABLE OF kna1 WITH HEADER LINE.
+
+* Consulta
+SELECT *
+  FROM kna1
+    INTO TABLE gty_tti_clientes_cab
+      WHERE land1 = 'DE'.
+
+WRITE: / 'Antes de eliminar'.
+
+* Recorro tabla
+LOOP AT gty_tti_clientes_cab.
+  WRITE: / 'Fecha de creación: ', gty_tti_clientes_cab-erdat.
+ENDLOOP.
+
+* Valido para eliminar
+LOOP AT gty_tti_clientes_cab.
+  IF gty_tti_clientes_cab-erdat = '19960726'.
+    DELETE gty_tti_clientes_cab.
+  ENDIF.
+ENDLOOP.
+
+SKIP 2.
+ULINE.
+
+WRITE: / 'Después de eliminar'.
+LOOP AT gty_tti_clientes_cab.
+  WRITE: / 'Fecha de creación: ', gty_tti_clientes_cab-erdat.
+ENDLOOP.
+
+ULINE.
+
+*--------------------------------------------------------------------*
+* Delete registros con work area.
+DATA: gty_tti_clientes TYPE STANDARD TABLE OF kna1,       " ti
+      gty_clientes     TYPE kna1.                         " work area
+
+* Consulta.
+SELECT *
+  FROM kna1
+    INTO TABLE gty_tti_clientes
+        WHERE land1 = 'DE'.
+
+* Lógica.
+IF sy-subrc = 0.
+
+* Recorro tabla e imprimo registros.
+  LOOP AT gty_tti_clientes INTO gty_clientes.
+    WRITE: / gty_clientes-land1, " Clave país.
+             gty_clientes-kunnr. " Número deudor.
+  ENDLOOP.
+
+** Eliminación.
+  LOOP AT gty_tti_clientes INTO gty_clientes.
+* Recorro tabla y elimino el primer registro.
+    IF sy-tabix EQ 1.
+
+      DELETE TABLE gty_tti_clientes FROM gty_clientes.
+      EXIT.
+    ENDIF.
+
+  ENDLOOP.
+
+  SKIP 2.
+  ULINE.
+
+  LOOP AT gty_tti_clientes INTO gty_clientes.
+    IF sy-subrc = 0.
+      MESSAGE 'Primer registro eliminado' TYPE 'S'.
+    ENDIF.
+* Despues de borrado
+    WRITE: / 'Clave país: ',    gty_clientes-land1, " Clave país.
+             'Número deudor: ', gty_clientes-kunnr. " Número deudor.
+  ENDLOOP.
+ENDIF.
+
+*--------------------------------------------------------------------*
+
+* Move-corresponding.
+DATA: gty_tti_cli_cab TYPE STANDARD TABLE OF kna1 WITH HEADER LINE, " ti con cabecera.
+      gty_tti_cli     TYPE STANDARD TABLE OF kna1,                  " ti sin cabecera.
+      gty_cli         TYPE kna1.                                    " work area de ti sin cabecera.
+
+* Consulta.
+SELECT *
+  FROM kna1
+    INTO TABLE gty_tti_cli
+      WHERE land1 = 'DE'.
+
+* Mover de ti sin cabecera a ti con cabecera.
+  MOVE-CORRESPONDING gty_tti_cli TO gty_tti_cli_cab[].
+
+* Titulos.
+WRITE: / 'Deudores',
+         '   Fecha'.
+
+* Recorro e imprimo.
+LOOP AT gty_tti_cli_cab.
+  WRITE: / gty_tti_cli_cab-kunnr,
+           gty_tti_cli_cab-erdat.
+ENDLOOP.
+
+*--------------------------------------------------------------------*
+
+
+* Ejemplo tabla interna y tipo de tabla.
+* Estructura local.
+TYPES: BEGIN OF lwa_proveedores,
+        lifnr TYPE lfa1-lifnr, " Acreedor.
+        land1 TYPE lfa1-land1, " País.
+        name1 TYPE lfa1-name1, " Nombre.
+       END OF lwa_proveedores.
+
+* Declaro tablas.
+* Ti.
+DATA: lti_proveedores TYPE STANDARD TABLE OF lwa_proveedores, " ti.
+      lwa_prov        TYPE lwa_proveedores.                   " work area para ti local.
+
+* Tipo tabla.
+DATA: gty_tti_prov TYPE STANDARD TABLE OF lfa1, " tipo tabla.
+      gty_prov     TYPE lfa1.                   " work area para tipo tabla.
+
+* Consulta.
+SELECT *
+  FROM lfa1
+    INTO TABLE gty_tti_prov
+      WHERE land1 = 'DE'.
+
+LOOP AT gty_tti_prov INTO gty_prov.
+* Muevo de wa global a lwa local.
+  MOVE-CORRESPONDING gty_prov TO lwa_prov.
+
+* De la lwa local a ti local.
+  APPEND lwa_prov TO lti_proveedores.
+ENDLOOP.
+
+WRITE: / 'Acreedor',
+         ' País',
+         '   Nombre'.
+
+* Imprimo campos en pantalla desde la ti local.
+LOOP AT lti_proveedores INTO lwa_prov.
+  WRITE: / lwa_prov-lifnr,
+           lwa_prov-land1,
+           lwa_prov-name1.
+ENDLOOP.
+
+*--------------------------------------------------------------------*

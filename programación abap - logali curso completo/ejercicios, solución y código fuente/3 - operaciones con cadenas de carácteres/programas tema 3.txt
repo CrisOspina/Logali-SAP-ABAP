@@ -1,0 +1,113 @@
+Programas tema 3
+REPORT z_concat_p1002880.
+* Declaración.
+DATA: ejercicio      TYPE n LENGTH 4 VALUE '2018',
+      no_factura     TYPE n LENGTH 8 VALUE '1',
+      codigo_factura TYPE string.
+
+* Concatenar
+CONCATENATE 'Ejercicio' ejercicio 'de la factura' no_factura INTO codigo_factura SEPARATED BY ' '.
+
+* Visualiazar en pantalla.
+WRITE: / codigo_factura.
+
+*----------------------------------------------------------------------------------------------------------*
+
+REPORT z_concat_p1002880.
+* Declaración.
+DATA: expediente TYPE string VALUE 'Expediente    laboral con    estado     en       trámite'.
+
+* Implementación de la sentencia CONDENSE.
+CONDENSE expediente.
+
+* Visualización en pantalla.
+WRITE expediente.
+
+*----------------------------------------------------------------------------------------------------------*
+
+* REPORT z_concat_p1002880. 
+* Sentencia replace
+DATA: solicitud TYPE string VALUE 'SOL-327-ACCESO-28'.
+
+* Implementación de la sentencia
+REPLACE ALL OCCURRENCES OF '-' IN solicitud WITH '/'.
+
+* Visualización en pantalla
+WRITE: / 'Resultado final: ', solicitud.
+
+*----------------------------------------------------------------------------------------------------------*
+
+* Sentencia SEARCH.
+DATA: empresa  TYPE string VALUE 'SYSTEME ANWENDUNGEN PRODUKTE AG',
+      posicion TYPE i.
+
+* Visualización inicial.
+WRITE: / 'Empresa: ',                      empresa,
+       / 'Valor inicial de la posición: ', sy-fdpos.
+SKIP.
+ULINE.
+
+* Implementación de la sentecia SEARCH.
+SEARCH empresa FOR 'PRO' ABBREVIATED.
+
+* Se almacena valor de la posición.
+posicion = sy-fdpos + 1.
+
+* Visualización final.
+WRITE: / 'Empresa: ',                          empresa,
+       / 'Valor de la variable del sistema: ', sy-fdpos,
+       / 'Valor de la posición: ',             posicion.
+	   
+*----------------------------------------------------------------------------------------------------------*
+
+* Sentencia SHIFT.
+CONSTANTS: no_instalacion TYPE c LENGTH 10 VALUE '2015ABCD'.
+DATA: cadena TYPE c LENGTH 10.
+
+* Se asigna variable a
+cadena = no_instalacion.
+
+* Implementación de la sentencia.
+SHIFT cadena LEFT DELETING LEADING '20'.
+
+* Visualización en pantalla.
+WRITE: 'Variable con sentencia shift: ', cadena.
+
+*----------------------------------------------------------------------------------------------------------*
+
+* Sentencia TRANSLATE.
+DATA: frase TYPE string VALUE 'cristian ospina'.
+
+* Implementación de la sentencia TRANSLATE.
+TRANSLATE frase TO UPPER CASE. " Mayúsculas.
+
+* Visualización en pantalla.
+WRITE: 'Frase mayúsculas: ', frase.
+ULINE.
+
+TRANSLATE frase TO LOWER CASE. " Minúsculas.
+WRITE: 'Frase minúsculas: ', frase.
+
+*----------------------------------------------------------------------------------------------------------*
+
+* Sentencia SPLIT.
+DATA: registro TYPE string VALUE 'Ejercicio;2020;Sociedad;SAP',
+      campo1   TYPE string,
+      campo2   TYPE string,
+      campo3   TYPE string,
+      campo4   TYPE string.
+
+* Implementación de la sentencia SPLIT.
+SPLIT registro AT ';' INTO campo1
+                           campo2
+                           campo3
+                           campo4.
+
+* Visualizar en pantalla.
+WRITE:   campo1,
+       / campo2,
+       / campo3,
+       / campo4.
+*----------------------------------------------------------------------------------------------------------*
+
+

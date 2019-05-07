@@ -1,0 +1,202 @@
+soluciones ejercicios logali
+
+** Solución 1
+*
+*data: iva     TYPE i      VALUE 19,
+*      empresa TYPE string VALUE 'LogaliSAP'.
+*
+*WRITE: iva, empresa.
+*
+** Solución 2
+*DATA: codigo_sociedad TYPE n LENGTH 4 VALUE '9527',
+*      tarifa          TYPE p LENGTH 6 DECIMALS 2 VALUE '1489.36'.
+*
+*WRITE: / 'Código sociedad: ', codigo_sociedad,
+*         'Tarifa: ', tarifa.
+
+* Solución 3
+*CONSTANTS: fecha  TYPE d VALUE '20201127',
+*           moneda TYPE c LENGTH 3 VALUE 'EUR'.
+*
+*WRITE: / fecha,
+*       / moneda.
+
+* Solución 4
+*DATA: valor_1   TYPE i VALUE 12,
+*      valor_2   TYPE i VALUE 3,
+*      resultado TYPE i.
+*
+** Suma
+*resultado = valor_1 + valor_2.
+*WRITE: / 'Resultado suma: ',
+*          resultado.
+*
+** Resta
+*CLEAR resultado.
+*resultado = valor_1 - valor_2.
+*WRITE: / 'Resultado resta: ', resultado.
+*
+** Multiplicación
+*CLEAR resultado.
+*resultado = valor_1 * valor_2.
+*WRITE: / 'Resultado multiplicación: ', resultado.
+*
+** División
+*CLEAR resultado.
+*resultado = valor_1 / valor_2.
+*WRITE: / 'Resultado división: ', resultado.
+
+
+* Solución 5
+*DATA: centro  TYPE c LENGTH 10,
+*      almacen TYPE c LENGTH 10,
+*      texto   TYPE string.
+*
+** Asigno valores
+*centro  = 'México'.
+*almacen = 'Monterrey'.
+*
+** Convierto contenido a minusculas
+*TRANSLATE centro  TO LOWER CASE.
+*TRANSLATE almacen TO LOWER CASE.
+*
+** Imprimo
+*WRITE: / 'Centro: ',  centro,
+*       / 'Almacen: ', almacen.
+*
+** Concateno
+*CONCATENATE centro space almacen INTO texto RESPECTING BLANKS.
+*
+** Imprimo contenido concatenado
+*WRITE: / texto.
+
+* Solución 6
+*DATA longitud TYPE n.
+* Parametro para la edad
+*PARAMETERS pa_edad TYPE n LENGTH 2.
+*
+**longitud = strlen( pa_edad ).
+** Si esta vacio
+*IF pa_edad IS INITIAL.
+*  MESSAGE 'Por favor digita la edad' TYPE 'E'.
+**ELSEIF longitud > 2.
+**  MESSAGE 'Por favor digita una edad real...' TYPE 'E'.
+*ELSE.
+** Si es mayor o menor
+*  IF pa_edad >= 18.
+*    WRITE 'Eres mayor de edad'.
+*  ELSE.
+*    WRITE 'Eres menor de edad'.
+*  ENDIF.
+*ENDIF.
+
+* Solución 8
+*INCLUDE yprueba_co_top.
+*INCLUDE yprueba_co_f01.
+*
+*START-OF-SELECTION.
+** Ejecuto subrutinas
+*  PERFORM establecer_material.
+*  PERFORM visualizar_material.
+
+* Solución 9
+*INCLUDE: yprueba_co_top,
+*         yprueba_co_f01.
+*
+*START-OF-SELECTION.
+*  PERFORM crear_registro.
+*  PERFORM insertar_registro.
+
+* Solución 10
+* Declaro estructura o work area
+*DATA: gs_ypruebacott TYPE ypruebacott.
+*
+** Consulto información de la tabla transparente
+*SELECT SINGLE *
+*  FROM ypruebacott
+*    INTO gs_ypruebacott
+*      WHERE idcntr = 'BD5897'.
+*
+** Verifico que consulte
+*IF sy-subrc = 0.
+*  WRITE: / gs_ypruebacott-idcntr,
+*         / gs_ypruebacott-empresa,
+*         / gs_ypruebacott-fechaa.
+*ELSE.
+*  WRITE: / 'No se ha encontrado registro'.
+*ENDIF.
+
+** Solución 11 y 12-
+*CLASS material DEFINITION.
+*  PUBLIC SECTION.
+**   Atributo estático
+*    CLASS-DATA almacen TYPE string.
+*
+**   Importing
+*    METHODS set_matnr          IMPORTING i_matnr          TYPE string.
+*    METHODS set_fecha_creacion IMPORTING i_fecha_creacion TYPE d.
+*
+**   Exporting
+*    METHODS get_matnr          EXPORTING e_matnr          TYPE string.
+*    METHODS get_fecha_creacion EXPORTING e_fecha_creacion TYPE d.
+*
+*  PROTECTED SECTION.
+*
+*  PRIVATE SECTION.
+*    DATA: matnr          TYPE string,
+*          fecha_creacion TYPE d.
+*ENDCLASS.
+*
+*CLASS material IMPLEMENTATION.
+** Implementación de set_matnr y get_matnr
+*  METHOD set_matnr.
+*    matnr = i_matnr.
+*  ENDMETHOD.
+*
+*  METHOD get_matnr.
+*    e_matnr = matnr.
+*  ENDMETHOD.
+*
+** Implementación de set_fecha_creación y get_fecha_creacion
+*  METHOD set_fecha_creacion.
+*    fecha_creacion = i_fecha_creacion.
+*  ENDMETHOD.
+*
+*  METHOD get_fecha_creacion.
+*    e_fecha_creacion = fecha_creacion.
+*  ENDMETHOD.
+*ENDCLASS.
+*
+*
+*START-OF-SELECTION.
+** Instancia de la clase material
+*  DATA: go_obj            TYPE REF TO material,
+*        gv_matnr          TYPE string,
+*        gv_fecha_creacion TYPE d.
+*
+*  CREATE OBJECT go_obj.
+*
+**  Llamada de atributo estática
+*  material=>almacen = '2000'.
+*
+** Llamadas de los métodos con la instancia de la clase
+*  CALL METHOD go_obj->set_matnr
+*    EXPORTING
+*      i_matnr = 'Ceramica'.
+*
+*  CALL METHOD go_obj->get_matnr
+*    IMPORTING
+*      e_matnr = gv_matnr.
+*
+*  CALL METHOD go_obj->set_fecha_creacion
+*    EXPORTING
+*      i_fecha_creacion = '20000303'.
+*
+*  CALL METHOD go_obj->get_fecha_creacion
+*    IMPORTING
+*      e_fecha_creacion = gv_fecha_creacion.
+*
+** Imprimir
+*  WRITE: / 'Material: ',          gv_matnr,
+*         / 'Fecha de creación: ', gv_fecha_creacion,
+*         / 'Almacen: ',           go_obj->almacen.
